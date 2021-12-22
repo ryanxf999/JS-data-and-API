@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    
+    <style>
+        #issMap{
+
+            height: 380px;
+        }
+    </style>
+    
+    
+    <title>Fetch API ISS JSON</title>
+
+</head>
+
+<body>
+
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+
+    <h1>Where is the ISS?</h1>
+   
+
+    <p> latitude: <span id="lat"></span><br>
+        longitude: <span id="lon"></span><br>
+    </p>
+
+    <div id="issMap"></div>
+ 
+    
+    <script>
+
+        //====MAKING A MAP AND TILES.====
+        //nothing will show until you have the tiles specified.
+        //see leaflet quick start guid for help.
+        // 'L' is already defied and stands for leaflet in this case.
+        
+        const mymap = L.map('issMap').setView([0, 0], 1);
+        //required attribution
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tiles = L.tileLayer(tileUrl,{attribution});
+        tiles.addTo(mymap);
+
+        //====MAKING A MARKER WITH A CUSTOM ICON====
+        //sets the ISS png as the icon
+        const issIcon = L.icon({
+            iconUrl: 'iss200.png',
+            iconSize: [30, 18],
+            iconAnchor: [25, 16],
+        });
+        //marker accepts multiple arguments to assign the object above.
+        const marker = L.marker([0, 0], {icon: issIcon}).addTo(mymap);
+        //hard code the api address for ISS location data.
+        const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+        //refreshes the data every 1 sec or 1000ms
+        function refresh(){
+            setInterval(getISS,1000);
+
+        }
+        //async function that fetches the api from the url
+        async function getISS(){
+            //await is used to ensure the data is collected before moving on.
+            const response = await fetch(api_url);
+            //this is to convert response to json. 
+            const data = await response.json();
+            const {latitude, longitude}= data;
+            
+            marker.setLatLng([latitude,longitude]);
+
+            document.getElementById('lat').textContent = latitude;
+            document.getElementById('lon').textContent = longitude;
+            //console.log(data.latitude);
+            //console.log(data.longitude);         
+            //L.marker([latitude, longitude]).addTo(mymap);
+        }  
+       
+        //getISS();
+       
+        refresh();
+
+        
+    </script>
+
+
+</body>
+</html>
