@@ -18,19 +18,37 @@
 
 </head>
 <body>
-
-
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin="">
+    </script>
 
     <h1>Data Selfie App</h1>
     <p>Hello!</p>
-    <a href="index.html">Hello</a> | <a href="location.html">404 page</a>
-  
+    <a href="index.html">Hello</a> | <a href="404.html">404 page</a>
+    <p>
+        Latitude: <span id="lat">Loading...</span><br>
+        Longitude: <span id="lon">Loading...`</span><br>
+    </p>
+    <div id="locationMap"></div>
 
     <script>
-
+        //takes the location data from the broweser and displays it on the map
+        const mymap = L.map('locationMap').setView([0,0],10);
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+        const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tiles = L.tileLayer(tileUrl,{attribution});
+        tiles.addTo(mymap);
+        
+        const latitude = 0;
+        const longitude = 0;
+        const marker = L.marker([0, 0]).addTo(mymap);
 
         if ('geolocation' in navigator){
             console.log('geolocation available');
+            
+            getLocation();
             
 
         }else {
