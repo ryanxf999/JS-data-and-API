@@ -6,3 +6,4 @@ const app = express();
 app.listen(3000, () => console.log('Listening at 3000'));
 //define location for server to post to localhost
 app.use(express.static('public'));
+//check the commit
